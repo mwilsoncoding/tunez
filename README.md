@@ -12,3 +12,19 @@ Once you have those installed:
 * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+
+# Notes and Snippets
+
+Igniter project generator:
+
+```sh
+mix archive.install hex igniter_new
+```
+
+Example usage:
+
+```sh
+mix igniter.new my_app --with phx.new --install ash,error_tracker
+```
+
+
