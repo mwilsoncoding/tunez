@@ -1,0 +1,50 @@
+{
+  "name": "Devcontainer",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "elixir",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bierner.markdown-mermaid",
+        "editorconfig.editorconfig",
+        "github.vscode-pull-request-github",
+        "jakebecker.elixir-ls", 
+        "ms-azuretools.vscode-docker",
+        "pgourlain.erlang",
+        "phoenix-liveview-snippets.phoenix-liveview-snippets",
+        "phoenixframework.phoenix",
+        "redhat.vscode-yaml",
+        "bradlc.vscode-tailwindcss",
+        "timonwong.shellcheck",
+        "tomoki1207.pdf"
+      ],
+      "settings": {
+        // "lexical.server.releasePathOverride": "/usr/local/bin/expert",
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "files.associations": {
+          "*.css": "tailwindcss"
+        }
+      }
+    }
+  },
+  "forwardPorts": [6080,16686,80,443],
+  "postCreateCommand": ".devcontainer/postCreateCommand",
+  "postStartCommand": ".devcontainer/postStartCommand",
+  "remoteEnv": {
+    "ERL_FLAGS": "-kernel shell_history enabled -kernel shell_history_path '\"${containerWorkspaceFolder}/.erlang_history\"'",
+    "ERL_LIBS": "${containerWorkspaceFolder}/.hex/lib/erlang/lib",
+    "GH_TOKEN": "${localEnv:GH_TOKEN}",
+    "HEX_HOME": "${containerWorkspaceFolder}/.hex",
+    "MIX_HOME": "${containerWorkspaceFolder}/.mix",
+    "WORKSPACE": "${containerWorkspaceFolder}"
+  },
+  "remoteUser": "vscode",
+  "features": {
+    // debian-trixie no longer contains `eterm`, which is required for desktop-lit
+    // "ghcr.io/devcontainers/features/desktop-lite": {},
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  }
+}

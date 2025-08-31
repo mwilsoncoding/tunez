@@ -4,7 +4,7 @@ import Config
 config :tunez, Tunez.Repo,
   username: "postgres",
   password: "postgres",
-  hostname: "localhost",
+  hostname: "postgres",
   database: "tunez_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,

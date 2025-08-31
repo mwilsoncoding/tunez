@@ -40,3 +40,7 @@ npm-debug.log
 
 # Editor-generated files
 .elixir_ls
+
+/.mix
+/.hex
+/pgdata

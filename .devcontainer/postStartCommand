@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+PROJECT_NAME="${PROJECT_NAME:-.}"
+
+# Avoid dubious ownership
+git config \
+  --global \
+  --add safe.directory "${WORKSPACE}"
+
+cd "${PROJECT_NAME}"
+
+mix setup

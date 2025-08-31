@@ -1,0 +1,51 @@
+services:
+  elixir:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - DEBIAN_VERSION=${DEBIAN_VERSION}
+        - ELIXIR_VERSION=${ELIXIR_VERSION}
+        - LEFTHOOK_VERSION=${LEFTHOOK_VERSION}
+        - OTP_VERSION=${OTP_VERSION}
+        - YAMLFMT_VERSION=${YAMLFMT_VERSION}
+        - PSQL_VERSION=${POSTGRES_VERSION}
+    env_file:
+      - devcontainer.env
+    volumes:
+      - ../:/workspace:cached
+    depends_on:
+      - postgres
+    # - otel-collector
+    links:
+      - postgres
+    # - otel-collector
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+  postgres:
+    ports:
+    - 5432:5432
+    image: postgres:${POSTGRES_VERSION}
+    restart: unless-stopped
+    volumes:
+      - ../pgdata:/var/lib/postgresql/data:cached
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+# otel-collector:
+#   image: otel/opentelemetry-collector-contrib:latest
+#   command: ['--config=/conf/otel-collector-config.yaml']
+#   ports:
+#   - 4317:4317
+#   - 4318:4318
+#   volumes:
+#   - ./otel-collector-config.yaml:/conf/otel-collector-config.yaml
+#   links:
+#   - jaeger-all-in-one
+
+# jaeger-all-in-one:
+#   image: jaegertracing/all-in-one:latest
+#   ports:
+#   - '16686:16686'

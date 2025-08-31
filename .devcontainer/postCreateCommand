@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+PROJECT_NAME="${PROJECT_NAME:-.}"
+
+# Avoid dubious ownership
+git config \
+  --global \
+  --add safe.directory "${WORKSPACE}"
+
+# Set default git pull strategy
+git config pull.rebase false
+
+lefthook install
+
+cd "${PROJECT_NAME}"
+
+# shellcheck disable=SC1010
+mix do local.hex --force --if-missing + \
+       local.rebar --force --if-missing
