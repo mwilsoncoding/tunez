@@ -7,12 +7,10 @@ defmodule Tunez.Music.Artist do
   end
 
   actions do
+    defaults [:read]
+
     create :create do
       accept [:name, :biography]
-    end
-
-    read :read do
-      primary? true
     end
 
     update :update do
