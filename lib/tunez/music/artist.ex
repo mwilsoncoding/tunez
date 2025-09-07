@@ -25,6 +25,11 @@ defmodule Tunez.Music.Artist do
     uuid_primary_key :id
 
     attribute :name, :string, do: allow_nil?(false)
+
+    attribute :previous_names, {:array, :string} do
+      default []
+    end
+
     attribute :biography, :string
 
     create_timestamp :inserted_at
