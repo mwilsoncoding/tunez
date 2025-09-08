@@ -44,3 +44,4 @@ npm-debug.log
 /.mix
 /.hex
 /pgdata
+/.erlang_history
