@@ -415,7 +415,7 @@ defmodule TunezWeb.CoreComponents do
         id={@id}
         value={Phoenix.HTML.Form.normalize_value(@type, @value)}
         class={[form_input_styles(), @class]}
-        phx-debounce="250"
+        phx-debounce={@rest[:"phx-debounce"] || TunezWeb.Constants.default_debounce()}
         {@rest}
       />
       <.error :for={msg <- @errors}>{msg}</.error>
