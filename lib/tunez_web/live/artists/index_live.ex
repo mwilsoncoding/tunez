@@ -82,7 +82,7 @@ defmodule TunezWeb.Artists.IndexLive do
 
   def artist_card_album_info(%{artist: %{album_count: 0}} = assigns), do: ~H""
 
-  def artist_card_album_info(%{artist: _} = assigns) do
+  def artist_card_album_info(%{artist: %Tunez.Music.Artist{} = _} = assigns) do
     ~H"""
     <span class="mt-2 text-sm leading-6 text-zinc-500">
       {@artist.album_count} {ngettext("album", "albums", @artist.album_count)},
@@ -97,7 +97,7 @@ defmodule TunezWeb.Artists.IndexLive do
     """
   end
 
-  def follower_count_display(%{count: _} = assigns) do
+  def follower_count_display(%{count: c} = assigns) when is_integer(c) do
     ~H"""
     <span
       :if={@count > 0}
@@ -109,7 +109,9 @@ defmodule TunezWeb.Artists.IndexLive do
     """
   end
 
-  def pagination_links(%{page: _, query_text: _, sort_by: _} = assigns) do
+  def pagination_links(
+        %{page: %Ash.Page.Offset{} = _, query_text: "" <> _, sort_by: "" <> _} = assigns
+      ) do
     ~H"""
     <div
       :if={
