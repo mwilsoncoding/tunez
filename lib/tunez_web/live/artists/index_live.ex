@@ -82,7 +82,7 @@ defmodule TunezWeb.Artists.IndexLive do
 
   def artist_card_album_info(%{artist: %{album_count: 0}} = assigns), do: ~H""
 
-  def artist_card_album_info(%{artist: %Tunez.Music.Artist{} = _} = assigns) do
+  def artist_card_album_info(%{artist: %{} = _} = assigns) do
     ~H"""
     <span class="mt-2 text-sm leading-6 text-zinc-500">
       {@artist.album_count} {ngettext("album", "albums", @artist.album_count)},
