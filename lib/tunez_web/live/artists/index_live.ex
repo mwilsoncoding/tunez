@@ -11,21 +11,26 @@ defmodule TunezWeb.Artists.IndexLive do
     {:ok, socket}
   end
 
-  def handle_params(%{} = params, _url, socket) do
+  def handle_params(%{} = params, _url, %Phoenix.LiveView.Socket{} = socket) do
     sort_by = Map.get(params, "sort_by") |> validate_sort_by()
     query_text = Map.get(params, "q", "")
-    artists = Tunez.Music.search_artists!(query_text, query: [sort_input: sort_by])
+
+    page_params =
+      AshPhoenix.LiveView.page_from_params(params, TunezWeb.Constants.default_pagination_limit())
+
+    page =
+      Tunez.Music.search_artists!(query_text, page: page_params, query: [sort_input: sort_by])
 
     socket =
       socket
       |> assign(:sort_by, sort_by)
       |> assign(:query_text, query_text)
-      |> assign(:artists, artists)
+      |> assign(:page, page)
 
     {:noreply, socket}
   end
 
-  def render(assigns) do
+  def render(%{} = assigns) do
     ~H"""
     <Layouts.app {assigns}>
       <.header responsive={false}>
@@ -41,21 +46,22 @@ defmodule TunezWeb.Artists.IndexLive do
         </:action>
       </.header>
 
-      <div :if={@artists == []} class="p-8 text-center">
+      <div :if={@page.results == []} class="p-8 text-center">
         <.icon name="hero-face-frown" class="w-32 h-32 bg-gray-300" />
         <br /> No artist data to display!
       </div>
 
       <ul class="gap-6 lg:gap-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-        <li :for={artist <- @artists}>
+        <li :for={artist <- @page.results}>
           <.artist_card artist={artist} />
         </li>
       </ul>
+      <.pagination_links page={@page} query_text={@query_text} sort_by={@sort_by} />
     </Layouts.app>
     """
   end
 
-  def artist_card(assigns) do
+  def artist_card(%{} = assigns) do
     ~H"""
     <div id={"artist-#{@artist.id}"} data-role="artist-card" class="relative mb-2">
       <.link navigate={~p"/artists/#{@artist.id}"}>
@@ -76,7 +82,7 @@ defmodule TunezWeb.Artists.IndexLive do
 
   def artist_card_album_info(%{artist: %{album_count: 0}} = assigns), do: ~H""
 
-  def artist_card_album_info(assigns) do
+  def artist_card_album_info(%{} = assigns) do
     ~H"""
     <span class="mt-2 text-sm leading-6 text-zinc-500">
       {@artist.album_count} {ngettext("album", "albums", @artist.album_count)},
@@ -85,13 +91,13 @@ defmodule TunezWeb.Artists.IndexLive do
     """
   end
 
-  def follow_icon(assigns) do
+  def follow_icon(%{} = assigns) do
     ~H"""
     <.icon name="hero-star-solid" class="w-8 h-8 bg-yellow-400 absolute top-2 right-2" />
     """
   end
 
-  def follower_count_display(assigns) do
+  def follower_count_display(%{} = assigns) do
     ~H"""
     <span
       :if={@count > 0}
@@ -103,24 +109,53 @@ defmodule TunezWeb.Artists.IndexLive do
     """
   end
 
-  def pagination_links(assigns) do
+  def pagination_links(%{} = assigns) do
     ~H"""
-    <div class="flex justify-center pt-8 space-x-4">
-      <.button_link data-role="previous-page" kind="primary" inverse>
+    <div
+      :if={
+        AshPhoenix.LiveView.prev_page?(@page) ||
+          AshPhoenix.LiveView.next_page?(@page)
+      }
+      class="flex justify-center pt-8 space-x-4"
+    >
+      <.button_link
+        data-role="previous-page"
+        kind="primary"
+        inverse
+        patch={~p"/?#{query_string(@page, @query_text, @sort_by, "prev")}"}
+        disabled={!AshPhoenix.LiveView.prev_page?(@page)}
+      >
         « Previous
       </.button_link>
-      <.button_link data-role="next-page" kind="primary" inverse>
+      <.button_link
+        data-role="next-page"
+        kind="primary"
+        inverse
+        patch={~p"/?#{query_string(@page, @query_text, @sort_by, "next")}"}
+        disabled={!AshPhoenix.LiveView.next_page?(@page)}
+      >
         Next »
       </.button_link>
     </div>
     """
   end
 
+  def query_string(%Ash.Page.Offset{} = page, "" <> query_text, "" <> sort_by, which)
+      when is_binary(which) or (is_integer(which) and which >= 0) do
+    case AshPhoenix.LiveView.page_link_params(page, which) do
+      :invalid -> []
+      list -> list
+    end
+    |> Keyword.put(:q, query_text)
+    |> Keyword.put(:sort_by, sort_by)
+    |> remove_empty()
+  end
+
   attr :query, :string, default: ""
   attr :rest, :global, include: ~w(method action phx-submit data-role)
   slot :inner_block, required: false
 
-  def search_box(assigns) do
+  def search_box(%{} = assigns) do
     ~H"""
     <form class="relative w-fit inline-block" {@rest}>
       <.icon name="hero-magnifying-glass" class="w-4 h-4 m-2 ml-3 mt-4 absolute bg-gray-400" />
@@ -137,7 +172,7 @@ defmodule TunezWeb.Artists.IndexLive do
     """
   end
 
-  def sort_changer(assigns) do
+  def sort_changer(%{} = assigns) do
     assigns = assign(assigns, :options, sort_options())
 
     ~H"""
@@ -164,7 +199,7 @@ defmodule TunezWeb.Artists.IndexLive do
     ]
   end
 
-  def validate_sort_by(key) do
+  def validate_sort_by("" <> key) do
     valid_keys = Enum.map(sort_options(), &elem(&1, 1))
 
     if key in valid_keys do
