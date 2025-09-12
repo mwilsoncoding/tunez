@@ -1,5 +1,5 @@
 pre-commit:
-  follow: true
+  parallel: true
   jobs:
     - name: elixir-format
       glob: "*.{ex,exs,heex}"
