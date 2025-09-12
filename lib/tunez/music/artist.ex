@@ -80,9 +80,9 @@ defmodule Tunez.Music.Artist do
 
   aggregates do
     # calculate :album_count, :integer, expr(count(albums))
-    count :album_count, :albums
+    count :album_count, :albums, public?: true
     # calculate :latest_album_year_released, :integer, expr(first(albums, field: :year_released))
-    first :latest_album_year_released, :albums, :year_released
+    first :latest_album_year_released, :albums, :year_released, public?: true
     # calculate :cover_image_url, :string, expr(first(albums, field: :cover_image_url))
     first :cover_image_url, :albums, :cover_image_url
   end
