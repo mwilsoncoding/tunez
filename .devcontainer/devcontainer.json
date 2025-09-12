@@ -25,6 +25,7 @@
       ],
       "settings": {
         // "lexical.server.releasePathOverride": "/usr/local/bin/expert",
+        "bruno.defaultCollectionLocation": "${containerWorkspaceFolder}/.bruno/collections",
         "terminal.integrated.defaultProfile.linux": "bash",
         "files.associations": {
           "*.css": "tailwindcss"
@@ -32,7 +33,7 @@
       }
     }
   },
-  "forwardPorts": [6080,16686,80,443],
+  "forwardPorts": [6080,16686,4000],
   "postCreateCommand": ".devcontainer/postCreateCommand",
   "postStartCommand": ".devcontainer/postStartCommand",
   "remoteEnv": {
