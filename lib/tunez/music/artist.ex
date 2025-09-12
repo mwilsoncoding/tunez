@@ -23,6 +23,11 @@ defmodule Tunez.Music.Artist do
       filter expr(contains(name, ^arg(:query)))
 
       pagination offset?: true, default_limit: Tunez.Constants.default_pagination_limit()
+
+      # Putting a `load: [:aggregate_field, :calculation_field]` here will be more costly to calculate
+      # since it applies to all `read`s, but ideal if the fields are always needed.
+      #
+      # prepare build(load: [:album_count, :latest_album_year_released, :cover_image_url])
     end
 
     create :create do
