@@ -66,11 +66,13 @@ defmodule Tunez.Music.Artist do
   end
 
   calculations do
-    calculate :latest_album_year_released, :integer, expr(first(albums, field: :year_released))
     calculate :cover_image_url, :string, expr(first(albums, field: :cover_image_url))
   end
 
   aggregates do
+    # calculate :album_count, :integer, expr(count(albums))
     count :album_count, :albums
+    # calculate :latest_album_year_released, :integer, expr(first(albums, field: :year_released))
+    first :latest_album_year_released, :albums, :year_released
   end
 end
