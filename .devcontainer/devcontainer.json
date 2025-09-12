@@ -11,6 +11,8 @@
         "editorconfig.editorconfig",
         "github.vscode-pull-request-github",
         "jakebecker.elixir-ls", 
+        "ketupia.ash-studio",
+        "martinhrvn.ash-framework-snippets",
         "ms-azuretools.vscode-docker",
         "pgourlain.erlang",
         "phoenix-liveview-snippets.phoenix-liveview-snippets",
