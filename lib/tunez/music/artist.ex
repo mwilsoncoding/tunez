@@ -66,7 +66,11 @@ defmodule Tunez.Music.Artist do
   end
 
   calculations do
-    calculate :cover_image_url, :string, expr(first(albums, field: :cover_image_url))
+    calculate :years_ago, :integer, expr(2025 - year_released)
+
+    calculate :string_years_ago,
+              :string,
+              expr("wow, this was released " <> years_ago <> " years ago!")
   end
 
   aggregates do
@@ -74,5 +78,7 @@ defmodule Tunez.Music.Artist do
     count :album_count, :albums
     # calculate :latest_album_year_released, :integer, expr(first(albums, field: :year_released))
     first :latest_album_year_released, :albums, :year_released
+    # calculate :cover_image_url, :string, expr(first(albums, field: :cover_image_url))
+    first :cover_image_url, :albums, :cover_image_url
   end
 end
