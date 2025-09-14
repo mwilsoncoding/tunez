@@ -1,0 +1,15 @@
+meta {
+  name: update_artist
+  type: http
+  seq: 5
+}
+
+patch {
+  url: http://localhost:4000/api/json/artists/7feb6b7a-4a60-409a-b97c-4a9dfdd8d1b7
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
