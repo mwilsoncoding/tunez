@@ -49,9 +49,9 @@ defmodule Tunez.Music.Album do
   attributes do
     uuid_primary_key :id
 
-    attribute :name, :string, do: allow_nil?(false)
-    attribute :year_released, :integer, do: allow_nil?(false)
-    attribute :cover_image_url, :string
+    attribute :name, :string, allow_nil?: false, public?: true
+    attribute :year_released, :integer, allow_nil?: false, public?: true
+    attribute :cover_image_url, :string, public?: true
 
     create_timestamp :inserted_at
     update_timestamp :updated_at
