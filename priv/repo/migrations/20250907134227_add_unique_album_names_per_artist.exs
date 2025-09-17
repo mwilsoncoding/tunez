@@ -1,4 +1,4 @@
-defmodule Tunez.Repo.Migrations.AddJniqueAlbumNamesPerArtist do
+defmodule Tunez.Repo.Migrations.AddUniqueAlbumNamesPerArtist do
   @moduledoc """
   Updates resources based on their most recent snapshots.
 
