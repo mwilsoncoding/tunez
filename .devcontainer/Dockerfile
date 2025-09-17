@@ -3,6 +3,7 @@ ARG OTP_VERSION
 ARG DEBIAN_VERSION
 ARG LEFTHOOK_VERSION
 ARG YAMLFMT_VERSION
+ARG WATCHMAN_VERSION
 FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}
 
 ARG USERNAME=vscode
@@ -17,6 +18,7 @@ RUN apt-get update \
       curl \
       inotify-tools \
       jq \
+      unzip \
       libwxgtk-gl3.2-1 \
       postgresql-client \
       shellcheck \
@@ -57,6 +59,18 @@ RUN curl -sfL https://github.com/evilmartians/lefthook/releases/download/v${LEFT
 
 ARG YAMLFMT_VERSION
 RUN curl -L https://github.com/google/yamlfmt/releases/download/v${YAMLFMT_VERSION}/yamlfmt_${YAMLFMT_VERSION}_Linux_x86_64.tar.gz | tar -C /usr/local/bin -xzf - yamlfmt
+
+ARG WATCHMAN_VERSION
+RUN mkdir -p /tmp/watchman /usr/local/{bin,lib} /usr/local/var/run/watchman && \
+    curl -L https://github.com/facebook/watchman/releases/download/v${WATCHMAN_VERSION}/watchman-v${WATCHMAN_VERSION}-linux.zip -o /tmp/watchman.zip && \
+    unzip /tmp/watchman.zip -d /tmp/watchman && \
+    cp /tmp/watchman/watchman-v${WATCHMAN_VERSION}-linux/bin/* /usr/local/bin/ && \
+    cp /tmp/watchman/watchman-v${WATCHMAN_VERSION}-linux/lib/* /usr/local/lib/ && \
+    rm /usr/local/lib/liblzma.so.5 && \
+    ln -s /usr/lib/x86_64-linux-gnu/liblzma.so.5 /usr/local/lib/liblzma.so.5 && \
+    chmod 755 /usr/local/bin/watchman && \
+    chmod 2777 /usr/local/var/run/watchman && \
+    rm -rf /tmp/watchman
 
 # RUN curl -L https://github.com/elixir-lang/expert/releases/download/nightly/expert_linux_amd64 -o /usr/local/bin/expert && \
 #     chmod +x /usr/local/bin/expert
