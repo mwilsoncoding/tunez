@@ -7,7 +7,8 @@ defmodule Tunez.Repo do
     # Add extensions here, and the migration generator will install them.
     [
       "ash-functions",
-      "pg_trgm"
+      "pg_trgm",
+      "citext"
     ]
   end
 
