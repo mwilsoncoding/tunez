@@ -22,6 +22,7 @@
         "redhat.vscode-yaml",
         "bradlc.vscode-tailwindcss",
         "timonwong.shellcheck",
+        "ms-ossdata.vscode-pgsql",
         "tomoki1207.pdf"
       ],
       "settings": {
